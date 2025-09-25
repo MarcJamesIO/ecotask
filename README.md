@@ -5,6 +5,8 @@ Design:
 I checked the example site and made notes of the layout, fonts and colours used. I knew I was going to use the buttons, the hero (potentially with a video background)
 with the funky strip SVG's and the cards for the datasets.
 
+So I mocked up a very draft-y layout design in Photoshop you can find in the public/designs.psd file.
+
 Build:
 
 1. Check the data.
@@ -42,3 +44,7 @@ I then added a footer with a logo and copyright text, as it looked odd without a
 I also added a bunch of those stripey borders to everything and... removed them. It was a bit overkill.
 
 Also it's using Tailwind which is mobile first so should be fine on mobile.
+
+NOTES:
+
+I created this quite quickly and with more time I would nail down the fonts and typography more precisely (and added a favicon!), but I didn't have access to the Greycliff font. I began to research similar fonts but in my experience, those details take some time to get right and with my current workload/family commitments I couldn't spend as much time on it as I would have liked.
