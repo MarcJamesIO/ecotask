@@ -1,103 +1,104 @@
+import Resources from "./components/Resources";
+import Footer from "./components/Footer";
 import Image from "next/image";
+interface Resource {
+  id: string;
+  name: string;
+  format?: string;
+  description?: string;
+  url: string;
+}
 
-export default function Home() {
+interface Dataset {
+  title: string;
+  notes?: string;
+  resources: Resource[];
+}
+
+async function getNesoData(): Promise<Dataset> {
+  const res = await fetch(
+    "https://api.neso.energy/api/3/action/package_show?id=embedded-wind-and-solar-forecasts",
+    { cache: "no-store" }
+  );
+  if (!res.ok) throw new Error("Failed to fetch dataset");
+  const data = await res.json();
+  return {
+    title: data.result.title,
+    notes: data.result.notes,
+    resources: data.result.resources,
+  } as Dataset;
+}
+
+function stripHtml(html: string) {
+  if (!html) return "";
+  return html.replace(/<[^>]*>/g, "").trim();
+}
+
+export default async function Page() {
+  let dataset: Dataset;
+  try {
+    dataset = await getNesoData();
+  } catch {
+    return (
+      <main className="p-8 bg-white text-black">
+        <h1 className="text-2xl font-bold">Couldn’t load the dataset.</h1>
+      </main>
+    );
+  }
+
   return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
+    <main className="font-sans bg-white text-black">
+      <section className="relative h-[60vh] flex items-center justify-center text-center">
+        <video
+          autoPlay
+          muted
+          loop
+          playsInline
+          className="absolute top-0 left-0 w-full h-full object-cover"
+        >
+          <source src="/hero-video.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/30" />
+        <header className="absolute top-0 left-0 w-full px-8 py-4 z-20">
+          <div className="relative h-10 w-60">
             <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
+              src="/svg-image-8.svg"
+              alt="Logo"
+              fill
+              className="object-contain"
+              priority
             />
-            Deploy now
-          </a>
+          </div>
+        </header>
+        <div className="relative z-10 px-6 text-white">
+          <h1 className="text-4xl md:text-5xl font-bold">{dataset.title}</h1>
+          {dataset.notes && (
+            <p className="mt-4 max-w-2xl mx-auto text-lg">
+              {stripHtml(dataset.notes)}
+            </p>
+          )}
           <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            href="#resources"
+            className="inline-block px-12 py-4 mt-4 text-xs text-black rounded-full border-2 border-transparent hover:border-white"
+            style={{ backgroundColor: "#B6F334", cursor: "pointer" }}
           >
-            Read our docs
+            View Resources
           </a>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
+        <div className="absolute bottom-0 h-8 w-full translate-y-[16px]">
           <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+            src="/svg-image-3.svg"
+            alt="Logo"
+            fill
+            className="object-contain"
+            priority
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+        </div>
+      </section>
+
+      <Resources resources={dataset.resources} />
+
+      <Footer />
+    </main>
   );
 }
